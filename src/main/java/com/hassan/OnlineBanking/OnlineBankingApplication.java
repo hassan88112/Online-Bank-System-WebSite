@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class OnlineBankingApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OnlineBankingApplication.class, args);
+		try {
+			SpringApplication.run(OnlineBankingApplication.class, args);
+		} catch (Exception e) {
+			System.out.println("test hassan " + e);
+		}
 	}
-
 }

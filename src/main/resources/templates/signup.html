@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="main-login main-center">
-            <form class="form-horizontal" method="post" th:action="@{/signup}">
+            <form class="form-horizontal" method="post" th:object="${user}" th:action="@{/signup}" >
 
                 <div class="form-group">
                     <label for="firstName" class="cols-sm-2 control-label">First Name</label>
