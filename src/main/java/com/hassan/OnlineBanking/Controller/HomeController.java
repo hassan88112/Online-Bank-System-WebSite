@@ -3,6 +3,8 @@ package com.hassan.OnlineBanking.Controller;
 
 import com.hassan.OnlineBanking.Repository.RoleRepos;
 import com.hassan.OnlineBanking.Service.UserService;
+import com.hassan.OnlineBanking.models.PrimaryAccount;
+import com.hassan.OnlineBanking.models.SavingsAccount;
 import com.hassan.OnlineBanking.models.Security.UserRole;
 import com.hassan.OnlineBanking.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,6 +68,17 @@ public class HomeController {
 
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/userFront")
+    public String userFront(Principal principal, Model model) {
+        User user=userService.findByUsername(principal.getName());
+        PrimaryAccount primaryAccount=user.getPrimaryAccount();
+        SavingsAccount savingsAccount=user.getSavingsAccount();
+        model.addAttribute("primaryAccount", primaryAccount);
+        model.addAttribute("savingsAccount", savingsAccount);
+
+        return "userFront";
     }
 
 
