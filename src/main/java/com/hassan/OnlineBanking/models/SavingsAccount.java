@@ -8,7 +8,12 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
 @Entity
 @Data
 @AllArgsConstructor
@@ -24,7 +29,6 @@ public class SavingsAccount {
     @OneToMany(mappedBy = "savingsAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<SavingsTransaction> savingsTransactionList;
-
 
 
 

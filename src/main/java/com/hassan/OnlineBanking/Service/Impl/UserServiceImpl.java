@@ -1,16 +1,43 @@
 package com.hassan.OnlineBanking.Service.Impl;
 
+import com.hassan.OnlineBanking.Repository.RoleRepos;
 import com.hassan.OnlineBanking.Repository.UserRepos;
+import com.hassan.OnlineBanking.Service.AccountService;
 import com.hassan.OnlineBanking.Service.UserService;
+import com.hassan.OnlineBanking.models.Security.UserRole;
 import com.hassan.OnlineBanking.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Set;
+
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
 @Service
+@Transactional
 public class UserServiceImpl  implements UserService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepos  userRepos;
+
+    @Autowired
+    private RoleRepos roleRepos;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     public void save(User user) {
@@ -51,6 +78,30 @@ public class UserServiceImpl  implements UserService {
         }
 
         return false;
+    }
+
+    public User createUser(User user, Set<UserRole> userRoles) {
+        User localUser = userRepos.findByUsername(user.getUsername());
+
+        if (localUser != null) {
+            LOG.info("User with username {} already exist. Nothing will be done. ", user.getUsername());
+        } else {
+            String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+            user.setPassword(encryptedPassword);
+
+            for (UserRole ur : userRoles) {
+                roleRepos.save(ur.getRole());
+            }
+
+            user.getUserRoles().addAll(userRoles);
+
+            user.setPrimaryAccount(accountService.createPrimaryAccount());
+            user.setSavingsAccount(accountService.createSavingsAccount());
+
+            localUser = userRepos.save(user);
+        }
+
+        return localUser;
     }
 
 }

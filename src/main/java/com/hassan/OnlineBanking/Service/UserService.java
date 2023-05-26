@@ -1,6 +1,9 @@
 package com.hassan.OnlineBanking.Service;
 
+import com.hassan.OnlineBanking.models.Security.UserRole;
 import com.hassan.OnlineBanking.models.User;
+
+import java.util.Set;
 
 public interface UserService {
 
@@ -15,4 +18,6 @@ public interface UserService {
     boolean checkEmailExists(String email);
 
     void save (User user);
+
+    User createUser(User user, Set<UserRole> userRoles);
 }

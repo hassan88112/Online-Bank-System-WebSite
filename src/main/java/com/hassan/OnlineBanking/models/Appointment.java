@@ -6,7 +6,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
 @Entity
 @Data
 @AllArgsConstructor

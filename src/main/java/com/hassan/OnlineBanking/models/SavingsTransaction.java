@@ -8,6 +8,12 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
 @Entity
 @Data
 @AllArgsConstructor

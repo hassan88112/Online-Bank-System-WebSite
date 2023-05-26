@@ -1,7 +1,9 @@
 package com.hassan.OnlineBanking.Controller;
 
 
+import com.hassan.OnlineBanking.Repository.RoleRepos;
 import com.hassan.OnlineBanking.Service.UserService;
+import com.hassan.OnlineBanking.models.Security.UserRole;
 import com.hassan.OnlineBanking.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleRepos roleRepos;
 
     @GetMapping("/")
     public String home() {
@@ -52,10 +57,10 @@ public class HomeController {
 
             return "signup";
         } else {
-       //     Set<UserRole> userRoles = new HashSet<>();
-       //     userRoles.add(new UserRole(user, roleDao.findByName("ROLE_USER")));
+            Set<UserRole> userRoles = new HashSet<>();
+            userRoles.add(new UserRole(user,roleRepos.findByName("ROLE_USER")));
 
-            userService.save(user);
+            userService.createUser(user, userRoles);
 
             return "redirect:/";
         }
