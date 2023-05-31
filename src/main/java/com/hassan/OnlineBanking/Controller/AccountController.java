@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
@@ -34,6 +36,9 @@ public class AccountController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AccountService accountService;
 
 
     @GetMapping("/primaryAccount")
@@ -58,14 +63,36 @@ public class AccountController {
     }
 
     @GetMapping("/deposit")
-    public String deposit(){
-
+    public String deposit(Model model){
+        model.addAttribute("accountType","");
+        model.addAttribute("amount","");
         return "deposit";
     }
 
+    @PostMapping("/deposit")
+    public String depositPost(@ModelAttribute("accountType") String accountType,@ModelAttribute("amount") String amount  ,Principal principal){
+
+      //  User user=userService.findByUsername(principal.getName());
+        accountService.deposit(accountType,Double.parseDouble(amount),principal);
+
+
+        return "redirect:/userFront";
+    }
+
     @GetMapping("/withdraw")
-    public String withdraw (){
+    public String withdraw (Model model){
+        model.addAttribute("accountType","");
+        model.addAttribute("amount","");
+
 
         return  "withdraw";
     }
+    @PostMapping("/withdraw")
+    public String withdraw(@ModelAttribute("accountType") String accountType,@ModelAttribute("amount") String amount,Principal principal){
+
+      //  User user=userService.findByUsername(principal.getName());
+        accountService.withdraw(accountType,Double.parseDouble(amount),principal);
+        return "redirect:/userFront";
+    }
+
 }
