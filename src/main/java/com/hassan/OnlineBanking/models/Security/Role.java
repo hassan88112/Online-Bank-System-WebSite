@@ -5,7 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
 @Entity
 public class Role {
     @Id

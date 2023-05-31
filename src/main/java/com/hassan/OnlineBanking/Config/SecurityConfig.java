@@ -16,6 +16,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.security.SecureRandom;
 
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {

@@ -86,6 +86,7 @@ public class UserServiceImpl  implements UserService {
         if (localUser != null) {
             LOG.info("User with username {} already exist. Nothing will be done. ", user.getUsername());
         } else {
+            localUser=new User();
             String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
             user.setPassword(encryptedPassword);
 
@@ -98,7 +99,7 @@ public class UserServiceImpl  implements UserService {
             user.setPrimaryAccount(accountService.createPrimaryAccount());
             user.setSavingsAccount(accountService.createSavingsAccount());
 
-            localUser = userRepos.save(user);
+            localUser = userRepos.saveAndFlush(user);
         }
 
         return localUser;

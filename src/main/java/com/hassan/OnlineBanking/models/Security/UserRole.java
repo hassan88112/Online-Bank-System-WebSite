@@ -4,7 +4,12 @@ import com.hassan.OnlineBanking.models.User;
 
 
 import javax.persistence.*;
-
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
 
 
 @Entity
