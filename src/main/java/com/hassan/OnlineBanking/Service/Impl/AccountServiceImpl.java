@@ -4,10 +4,8 @@ import com.hassan.OnlineBanking.Repository.PrimaryAccountRepo;
 import com.hassan.OnlineBanking.Repository.SavingAccountRepo;
 import com.hassan.OnlineBanking.Service.AccountService;
 import com.hassan.OnlineBanking.Service.UserService;
-import com.hassan.OnlineBanking.models.PrimaryAccount;
-import com.hassan.OnlineBanking.models.SavingsAccount;
+import com.hassan.OnlineBanking.models.*;
 
-import com.hassan.OnlineBanking.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +14,12 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
 
+/**
+ * Author : hassan shalash
+ *
+ * 25/5/2023
+ *
+ * */
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -57,15 +61,17 @@ public class AccountServiceImpl implements AccountService {
 
         if (accountType.equalsIgnoreCase("Primary")){
             PrimaryAccount primaryAccount=user.getPrimaryAccount();
-            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount)));
             primaryAccountRepo.save(primaryAccount);
-
             Date date=new Date();
+            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Deposit to Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
+
         }else if (accountType.equalsIgnoreCase("Savings")){
             SavingsAccount savingsAccount=user.getSavingsAccount();
-            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().add(new BigDecimal(amount)));
             savingAccountRepo.save(savingsAccount);
             Date date=new Date();
+            SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Deposit to savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
         }
     }
 
@@ -77,12 +83,17 @@ public class AccountServiceImpl implements AccountService {
             PrimaryAccount primaryAccount=user.getPrimaryAccount();
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             primaryAccountRepo.save(primaryAccount);
+            Date date=new Date();
+            PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
+
 
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount=user.getSavingsAccount();
             savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             savingAccountRepo.save(savingsAccount);
             Date date=new Date();
+            SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Withdraw from savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
+
 
         }
 

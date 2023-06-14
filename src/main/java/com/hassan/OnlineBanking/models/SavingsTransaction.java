@@ -34,4 +34,12 @@ public class SavingsTransaction {
     @JoinColumn(name = "savings_account_id")
     private SavingsAccount savingsAccount;
 
+    public SavingsTransaction(Date date,
+                              String depositToSavingsAccount,
+                              String account,
+                              String finished,
+                              double amount,
+                              BigDecimal accountBalance,
+                              SavingsAccount savingsAccount) {
     }
+}

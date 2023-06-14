@@ -35,4 +35,12 @@ public class PrimaryTransaction {
     private PrimaryAccount primaryAccount;
 
 
+    public PrimaryTransaction(Date date,
+                              String depositToPrimaryAccount,
+                              String account,
+                              String finished,
+                              double amount,
+                              BigDecimal accountBalance,
+                              PrimaryAccount primaryAccount) {
+    }
 }
