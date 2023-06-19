@@ -3,6 +3,7 @@ package com.hassan.OnlineBanking.Service.Impl;
 import com.hassan.OnlineBanking.Repository.PrimaryAccountRepo;
 import com.hassan.OnlineBanking.Repository.SavingAccountRepo;
 import com.hassan.OnlineBanking.Service.AccountService;
+import com.hassan.OnlineBanking.Service.TransactionService;
 import com.hassan.OnlineBanking.Service.UserService;
 import com.hassan.OnlineBanking.models.*;
 
@@ -31,6 +32,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private TransactionService transactionService;
 
     private static int nextAccountNumber = 11223145;
 
@@ -54,6 +57,7 @@ public class AccountServiceImpl implements AccountService {
 
         return savingAccountRepo.findByAccountNumber(savingsAccount.getAccountNumber());
     }
+    // TODO Deposit to Accounts ( Primary & Savings )  created by  Hassan Shalash  ##
     @Override
     public void deposit(String accountType, double amount, Principal principal) {
 
@@ -63,18 +67,24 @@ public class AccountServiceImpl implements AccountService {
             PrimaryAccount primaryAccount=user.getPrimaryAccount();
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().add(new BigDecimal(amount)));
             primaryAccountRepo.save(primaryAccount);
+
             Date date=new Date();
             PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Deposit to Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
+            transactionService.savePrimaryDepositTransaction(primaryTransaction);
 
         }else if (accountType.equalsIgnoreCase("Savings")){
             SavingsAccount savingsAccount=user.getSavingsAccount();
             savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().add(new BigDecimal(amount)));
             savingAccountRepo.save(savingsAccount);
+
             Date date=new Date();
             SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Deposit to savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
+            transactionService.saveSavingsDepositTransaction(savingsTransaction);
         }
     }
 
+
+    // TODO Withdraw from Accounts ( Primary & Savings )  created by  Hassan Shalash  ##
     @Override
     public void withdraw(String accountType, double amount, Principal principal) {
         User user=userService.findByUsername(principal.getName());
@@ -83,17 +93,19 @@ public class AccountServiceImpl implements AccountService {
             PrimaryAccount primaryAccount=user.getPrimaryAccount();
             primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             primaryAccountRepo.save(primaryAccount);
+
             Date date=new Date();
             PrimaryTransaction primaryTransaction = new PrimaryTransaction(date, "Withdraw from Primary Account", "Account", "Finished", amount, primaryAccount.getAccountBalance(), primaryAccount);
-
+            transactionService.savePrimaryWithdrawTransaction(primaryTransaction);
 
         } else if (accountType.equalsIgnoreCase("Savings")) {
             SavingsAccount savingsAccount=user.getSavingsAccount();
             savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
             savingAccountRepo.save(savingsAccount);
+
             Date date=new Date();
             SavingsTransaction savingsTransaction = new SavingsTransaction(date, "Withdraw from savings Account", "Account", "Finished", amount, savingsAccount.getAccountBalance(), savingsAccount);
-
+            transactionService.saveSavingsWithdrawTransaction(savingsTransaction);
 
         }
 
