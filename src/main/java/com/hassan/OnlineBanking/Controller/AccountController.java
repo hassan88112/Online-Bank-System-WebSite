@@ -68,7 +68,7 @@ public class AccountController {
         return "savingsAccount";
     }
 
-    @RequestMapping(value = "/deposit", method = RequestMethod.GET)
+    @GetMapping(value = "/deposit")
     public String deposit(Model model) {
         model.addAttribute("accountType", "");
         model.addAttribute("amount", "");
@@ -76,14 +76,14 @@ public class AccountController {
         return "deposit";
     }
 
-    @RequestMapping(value = "/deposit", method = RequestMethod.POST)
+    @PostMapping(value = "/deposit")
     public String depositPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal) {
         accountService.deposit(accountType, Double.parseDouble(amount), principal);
 
         return "redirect:/userFront";
     }
 
-    @RequestMapping(value = "/withdraw", method = RequestMethod.GET)
+    @GetMapping(value = "/withdraw")
     public String withdraw(Model model) {
         model.addAttribute("accountType", "");
         model.addAttribute("amount", "");
@@ -91,7 +91,7 @@ public class AccountController {
         return "withdraw";
     }
 
-    @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
+    @PostMapping(value = "/withdraw")
     public String withdrawPOST(@ModelAttribute("amount") String amount, @ModelAttribute("accountType") String accountType, Principal principal) {
         accountService.withdraw(accountType, Double.parseDouble(amount), principal);
 
