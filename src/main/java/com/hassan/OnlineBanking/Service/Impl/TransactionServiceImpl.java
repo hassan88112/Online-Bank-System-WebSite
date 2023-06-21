@@ -1,9 +1,6 @@
 package com.hassan.OnlineBanking.Service.Impl;
 
-import com.hassan.OnlineBanking.Repository.PrimaryAccountRepo;
-import com.hassan.OnlineBanking.Repository.PrimaryTransactionRepos;
-import com.hassan.OnlineBanking.Repository.SavingAccountRepo;
-import com.hassan.OnlineBanking.Repository.SavingsTransactionRepos;
+import com.hassan.OnlineBanking.Repository.*;
 import com.hassan.OnlineBanking.Service.TransactionService;
 import com.hassan.OnlineBanking.Service.UserService;
 import com.hassan.OnlineBanking.models.*;
@@ -11,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Author : hassan shalash
@@ -36,6 +35,9 @@ public class TransactionServiceImpl implements TransactionService {
     private PrimaryAccountRepo primaryAccountRepo;
     @Autowired
     private SavingAccountRepo savingAccountRepo;
+
+    @Autowired
+    private RecipientRepos recipientRepos;
 
 
     @Override
@@ -89,7 +91,7 @@ public class TransactionServiceImpl implements TransactionService {
             savingAccountRepo.save(savingsAccount);
 
             Date date=new Date();
-            PrimaryTransaction primaryTransaction=new PrimaryTransaction(date,"Between account transfer from"+transferFrom +"to"+transferTo,"Account","Finished",Double.parseDouble(amount),primaryAccount.getAccountBalance(),primaryAccount);
+            PrimaryTransaction primaryTransaction=new PrimaryTransaction(date,"Between account transfer from "+transferFrom +"to "+transferTo,"Account","Finished",Double.parseDouble(amount),primaryAccount.getAccountBalance(),primaryAccount);
             primaryTransactionRepos.save(primaryTransaction);
 
         } else if (transferFrom.equalsIgnoreCase("Savings") && transferTo.equalsIgnoreCase("Primary")) {
@@ -100,10 +102,35 @@ public class TransactionServiceImpl implements TransactionService {
             primaryAccountRepo.save(primaryAccount);
 
             Date date=new Date();
-            SavingsTransaction savingsTransaction=new SavingsTransaction(date,"Between account transfer from"+transferFrom +"to"+transferTo,"Account","Finished",Double.parseDouble(amount),savingsAccount.getAccountBalance(),savingsAccount);
+            SavingsTransaction savingsTransaction=new SavingsTransaction(date,"Between account transfer from "+transferFrom +" to "+transferTo,"Account","Finished",Double.parseDouble(amount),savingsAccount.getAccountBalance(),savingsAccount);
             savingsTransactionRepos.save(savingsTransaction);
         }else {
             throw new Exception("Invalid Transfer");
         }
+    }
+
+    @Override
+    public List<Recipient> findRecipientList(Principal principal) {
+        String username =principal.getName();
+        List<Recipient> recipientList = recipientRepos.findAll().stream()
+                .filter(recipient -> username.equals(recipient.getUser().getUsername()))
+                .collect(Collectors.toList());
+
+        return recipientList;
+    }
+
+    @Override
+    public Recipient saveRecipient(Recipient recipient) {
+        return recipientRepos.save(recipient);
+    }
+
+    @Override
+    public Recipient findRecipientByName(String recipientName) {
+        return recipientRepos.findByName(recipientName);
+    }
+
+    @Override
+    public void deleteRecipientByName(String recipientName) {
+        recipientRepos.deleteByName(recipientName);
     }
 }

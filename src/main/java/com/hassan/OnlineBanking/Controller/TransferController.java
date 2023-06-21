@@ -4,17 +4,17 @@ package com.hassan.OnlineBanking.Controller;
 import com.hassan.OnlineBanking.Service.TransactionService;
 import com.hassan.OnlineBanking.Service.UserService;
 import com.hassan.OnlineBanking.models.PrimaryAccount;
+import com.hassan.OnlineBanking.models.Recipient;
 import com.hassan.OnlineBanking.models.SavingsAccount;
 import com.hassan.OnlineBanking.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 /**
  * Author : hassan shalash
@@ -57,6 +57,46 @@ public class TransferController {
 
         return "redirect:/userFront";
     }
+
+    @GetMapping(value = "/recipient")
+    public String recipient(Model model,Principal principal){
+
+        List<Recipient> recipientList=transactionService.findRecipientList(principal);
+
+        Recipient recipient=new Recipient();
+        model.addAttribute("recipientList" ,recipientList);
+        model.addAttribute("recipient",recipient);
+
+        return "recipient";
+    }
+
+    @PostMapping(value = "/recipient/save")
+    public String recipientPost(@ModelAttribute("recipient") Recipient recipient ,Principal principal){
+        User user=userService.findByUsername(principal.getName());
+        recipient.setUser(user);
+        transactionService.saveRecipient(recipient);
+
+        return"redirect:/transfer/recipient";
+
+    }
+
+
+    @GetMapping(value = "/recipient/delete")
+    @Transactional
+    public String recipientDelete(@RequestParam(value = "recipientName") String recipientName, Model model, Principal principal){
+
+        transactionService.deleteRecipientByName(recipientName);
+
+        List<Recipient> recipientList = transactionService.findRecipientList(principal);
+
+        Recipient recipient = new Recipient();
+        model.addAttribute("recipient", recipient);
+        model.addAttribute("recipientList", recipientList);
+
+
+        return "recipient";
+    }
+
 
 
 }
