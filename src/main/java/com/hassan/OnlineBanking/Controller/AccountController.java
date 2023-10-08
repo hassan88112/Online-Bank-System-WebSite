@@ -40,6 +40,7 @@ public class AccountController {
 
     @GetMapping("/primaryAccount")
     public String primaryAccount(Model model,Principal principal){
+
         // TODO hat el primaryAccount bta3 user el 3ml sign in  >>   created by hassan shalash ##
 
         List<PrimaryTransaction> primaryTransactionList = transactionService.findPrimaryTransactionList(principal.getName());
@@ -55,6 +56,7 @@ public class AccountController {
 
     @GetMapping("/savingsAccount")
     public String SavingsAccount(Model model,Principal principal){
+
         // TODO hat el savingsAccount bta3 user el 3ml sign in  >>   created by hassan shalash  ##
 
         List<SavingsTransaction> savingsTransactionList =transactionService.findSavingsTransactionList(principal.getName());

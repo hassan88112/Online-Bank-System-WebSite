@@ -105,12 +105,13 @@ public class TransactionServiceImpl implements TransactionService {
             SavingsTransaction savingsTransaction=new SavingsTransaction(date,"Between account transfer from "+transferFrom +" to "+transferTo,"Account","Finished",Double.parseDouble(amount),savingsAccount.getAccountBalance(),savingsAccount);
             savingsTransactionRepos.save(savingsTransaction);
         }else {
-            throw new Exception("Invalid Transfer");
+            throw new Exception("Invalid Transfer amounts between accounts 😥");
         }
     }
 
     @Override
     public List<Recipient> findRecipientList(Principal principal) {
+        // TODO using java Streams  . ## Hassan Shalash.
         String username =principal.getName();
         List<Recipient> recipientList = recipientRepos.findAll().stream()
                 .filter(recipient -> username.equals(recipient.getUser().getUsername()))
@@ -133,4 +134,27 @@ public class TransactionServiceImpl implements TransactionService {
     public void deleteRecipientByName(String recipientName) {
         recipientRepos.deleteByName(recipientName);
     }
+
+    // TODO transfer money from two accounts (Primary & Savings) to someone else ## Hassan Shalash
+    @Override
+    public void toSomeoneElseTransfer(Recipient recipient, String accountType, String amount, PrimaryAccount primaryAccount, SavingsAccount savingsAccount) {
+
+        if (accountType.equalsIgnoreCase("Primary")){
+            primaryAccount.setAccountBalance(primaryAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+            primaryAccountRepo.save(primaryAccount);
+
+            Date date=new Date();
+            PrimaryTransaction primaryTransaction=new PrimaryTransaction(date, "Transfer to recipient "+recipient.getName(),"Transfer", "Finished",Double.parseDouble(amount),primaryAccount.getAccountBalance(),primaryAccount);
+            primaryTransactionRepos.save(primaryTransaction);
+
+        } else if (accountType.equalsIgnoreCase("Savings")) {
+            savingsAccount.setAccountBalance(savingsAccount.getAccountBalance().subtract(new BigDecimal(amount)));
+            savingAccountRepo.save(savingsAccount);
+
+            Date date=new Date();
+            SavingsTransaction savingsTransaction=new SavingsTransaction(date, "Transfer to recipient "+recipient.getName(),"Transfer", "Finished",Double.parseDouble(amount),savingsAccount.getAccountBalance(),savingsAccount);
+            savingsTransactionRepos.save(savingsTransaction);
+        }
+    }
+
 }
